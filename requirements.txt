@@ -4,6 +4,3 @@ pandas
 sqlalchemy
 openpyxl
 mysql-connector-python
-openai
-anthropic
-google-generativeai
