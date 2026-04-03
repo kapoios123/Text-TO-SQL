@@ -1,0 +1,6 @@
+streamlit
+groq
+pandas
+sqlalchemy
+openpyxl
+mysql-connector-python
