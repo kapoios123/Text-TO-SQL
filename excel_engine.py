@@ -17,14 +17,22 @@ def load_multiple_files(files, engine):
         else:
             df = pd.read_excel(file)
             
-        # Πιο ασφαλής καθαρισμός στηλών: 
-        # Μόνο αντικατάσταση κενών με κάτω παύλα, διατηρώντας τα υπόλοιπα
+        # Νέα λογική καθαρισμού με προστασία διπλοτύπων
         new_cols = []
-        for i, col in enumerate(df.columns):
+        seen_cols = {}
+        
+        for col in df.columns:
+            # Βασικός καθαρισμός: κενά σε κάτω παύλες και αφαίρεση ειδικών χαρακτήρων
             clean_col = str(col).strip().replace(' ', '_')
-            # Αν το όνομα υπάρχει ήδη, πρόσθεσε έναν αριθμό στο τέλος
-            if clean_col in new_cols:
-                clean_col = f"{clean_col}_{i}"
+            clean_col = re.sub(r'[^a-zA-Z0-9_]', '', clean_col)
+            
+            # Αν το όνομα υπάρχει ήδη, πρόσθεσε αριθμό (π.χ. Price_1, Price_2)
+            if clean_col in seen_cols:
+                seen_cols[clean_col] += 1
+                clean_col = f"{clean_col}_{seen_cols[clean_col]}"
+            else:
+                seen_cols[clean_col] = 0
+            
             new_cols.append(clean_col)
         
         df.columns = new_cols
